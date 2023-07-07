@@ -6,6 +6,12 @@ author: Ivan Valdes Castillo <github@ivan.vc>
 branding:
   icon: 'archive'
   color: blue
+inputs:
+  author:
+    description: |
+      The author to use for the released packages (i.e., John Doe
+      <john@example.com>)
+    required: true
 secrets:
   - GITHUB_TOKEN
   - RSA_PUBLIC_KEY
