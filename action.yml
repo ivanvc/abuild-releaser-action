@@ -21,8 +21,21 @@ inputs:
   commit_message:
     description: The commit message when updating the pages.
   generate_index_pages:
-    description: Set to false if you don't want to generate index pages.
+    description: Generate index pages for each directory.
+    default: 'false'
+  generate_single_index_page:
+    description: |
+      Generate a single index page for the repository. If neither this nor
+      generate_index_pages are selected, then it will not generate any index
+      pages, this option takes precedence over generate_index_pages.
     default: 'true'
+  index_page_template:
+    description: |
+      Override the default index page template. Point this to a file that exists
+      in the gh-pages branch. Refer to this repo's index.html.tpl for the
+      available template variables. Make sure to keep the
+      "ABUILD_RELEASER_ACTION_INDEX_TEMPLATE" comment, to know it's an generated
+      page.
 secrets:
   - GITHUB_TOKEN
 runs:

@@ -38,12 +38,20 @@ cp "$HOME/$GITHUB_REPOSITORY_OWNER.rsa.pub" .
 cp -rf "$HOME"/packages/* .
 
 # Generate index pages
+REPO_ROOT=$PWD
 generate_index() {
   dir=$1
   add_top_level=$2
+  files=$3
   cd "$dir"
-  files=$(find . -mindepth 1 -maxdepth 1 ! -name "$(printf "*\n*")" ! -name index.html ! -path '*/.*' -exec printf "'{}'," \;)
+  if [ -z "$files" ]; then
+    files=$(find . -mindepth 1 -maxdepth 1 ! -name "$(printf "*\n*")" ! -name index.html ! -path '*/.*' -exec printf "'{}'," \;)
+  fi
   env="$(mktemp)"
+  template="$REPO_ROOT/$INPUT_INDEX_PAGE_TEMPLATE"
+  if [ ! -f "$template" ]; then
+    template=/index.html.tpl
+  fi
   cat <<EOF > "$env"
 title='$GITHUB_ACTOR alpine packages'
 files=[$files]
@@ -52,18 +60,16 @@ EOF
   if "$add_top_level"; then
     echo "dir='$dir'" >> "$env"
   fi
-  if [ -f index.html ]; then
-    if grep "ABUILD_RELEASER_ACTION_INDEX_TEMPLATE" index.html > /dev/null; then
-      tpl -env @"$env" /index.html.tpl > index.html
-    fi
-  else
-    tpl -env @"$env" /index.html.tpl > index.html
+  if [ -f index.html ] && grep "ABUILD_RELEASER_ACTION_INDEX_TEMPLATE" index.html > /dev/null || [ ! -f index.html ]; then
+    tpl -env @"$env" "$template" > index.html
   fi
   rm "$env"
   cd -
 }
-
-if [ "$INPUT_GENERATE_INDEX_PAGES" = "true" ]; then
+if [ "$INPUT_GENERATE_SINGLE_INDEX_PAGE" = "true" ]; then
+  files=$(find . ! -name "$(printf "*\n*")" ! -name index.html ! -path '*/.*' -type f -exec printf "'{}'," \;)
+  generate_index . false "$files"
+elif [ "$INPUT_GENERATE_INDEX_PAGES" = "true" ]; then
   generate_index . false
   tmp="$(mktemp)"
   find . -mindepth 1 ! -name "$(printf "*\n*")" -type d -not -path '*/.*' > "$tmp"
