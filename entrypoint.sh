@@ -13,19 +13,20 @@ cp "$HOME/$GITHUB_REPOSITORY_OWNER.rsa.pub" /etc/apk/keys
 
 # Set current directory as a safe directory.
 git config --global --add safe.directory /github/workspace
-branch="$(git symbolic-ref --short HEAD)"
+ORIGINAL_BRANCH="$(git symbolic-ref --short HEAD)"
+GH_PAGES_BRANCH=gh-pages
 
 # Checkout gh-pages branch
-if ! git fetch -n --no-recurse-submodules --depth=1 origin gh-pages; then
+if ! git fetch -n --no-recurse-submodules --depth=1 origin "$GH_PAGES_BRANCH"; then
   echo "The branch gh-pages doesn't exist."
   exit 1
 fi
-git checkout --progress --force -B gh-pages refs/remotes/origin/gh-pages
+git checkout --progress --force -B "$GH_PAGES_BRANCH" refs/remotes/origin/"$GH_PAGES_BRANCH"
 
 # Copy current packages.
 mkdir ~/packages
 find . -type d -maxdepth 1 -mindepth 1 -not -path '*/.*' -exec cp -rf {} ~/packages/ \;
-git checkout "$branch"
+git checkout "$ORIGINAL_BRANCH"
 
 # Build any directory that contains an APKBUILD file
 # shellcheck disable=SC2016
@@ -33,7 +34,7 @@ find . -type f -name APKBUILD -exec /bin/sh -c 'cd $(dirname {}); abuild -F chec
 
 # Clean the repository and checkout the gh-pages branch
 # Copy released files
-git checkout gh-pages
+git checkout "$GH_PAGES_BRANCH"
 cp "$HOME/$GITHUB_REPOSITORY_OWNER.rsa.pub" .
 cp -rf "$HOME"/packages/* .
 
@@ -83,4 +84,4 @@ fi
 # Add files and push the branch
 git add .
 git -c user.name="$GITHUB_ACTOR" -c user.email="$GITHUB_ACTOR@users.noreply.github.com" commit -m "${INPUT_COMMIT_MESSAGE:-Update packages}" && \
-  git push origin gh-pages || echo Nothing to commit
+  git push origin "$GH_PAGES_BRANCH" || echo Nothing to commit
