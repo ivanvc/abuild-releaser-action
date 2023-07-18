@@ -37,6 +37,40 @@ git checkout gh-pages
 cp "$HOME/$GITHUB_REPOSITORY_OWNER.rsa.pub" .
 cp -rf "$HOME"/packages/* .
 
+# Generate index pages
+generate_index() {
+  dir=$1
+  add_top_level=$2
+  cd "$dir"
+  files=$(echo * | sed s/[[:space:]]/\',\'/g)
+  env="$(mktemp)"
+  cat <<EOF > "$env"
+title='"$GITHUB_ACTOR" alpine packages'
+files=['"$files"']
+add_top_level=$add_top_level
+EOF
+  if [ -f index.html ]; then
+    if grep "ABUILD_RELEASER_ACTION_INDEX_TEMPLATE" index.html 2> /dev/null; then
+      tpl -env @"$env" /index.htlm.tpl > index.html
+    fi
+  else
+    tpl -env @"$env" /index.html.tpl > index.html
+  fi
+  rm "$env"
+  cd -
+}
+
+if [ "$INPUT_GENERATE_INDEX_PAGES" = "true" ]; then
+  generate_index . false
+  tmp="$(mktemp)"
+  find . -mindepth 1 ! -name "$(printf "*\n*")" -type d -not -path '*/.*' > "$tmp"
+  while IFS= read -r dir
+  do
+    generate_index "$dir" true
+  done < "$tmp"
+  rm "$tmp"
+fi
+
 # Add files and push the branch
 git -c user.name="$GITHUB_ACTOR" -c user.email="$GITHUB_ACTOR@users.noreply.github.com" commit -am "${INPUT_COMMIT_MESSAGE:-Update packages}" && \
   git push origin gh-pages || echo Nothing to commit

@@ -20,6 +20,9 @@ inputs:
     required: true
   commit_message:
     description: The commit message when updating the pages.
+  generate_index_pages:
+    description: Set to false if you don't want to generate index pages.
+    default: 'true'
 secrets:
   - GITHUB_TOKEN
 runs:
