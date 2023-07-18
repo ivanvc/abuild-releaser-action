@@ -14,7 +14,7 @@
       <li><a href="..">..</a></li>
       {{- end }}
       {{- range .files }}
-      <li><a href="{{ . | trimPrefix "./" }}">{{ . | trimPrefix "./" }}</a></li>
+      <li><a href="{{ . }}">{{ . }}</a></li>
       {{- end }}
     </ul>
     <hr />

@@ -42,11 +42,11 @@ generate_index() {
   dir=$1
   add_top_level=$2
   cd "$dir"
-  files=$(find . -mindepth 1 -maxdepth 1 ! -name "$(printf "*\n*")" ! -name index.html ! -path '*/.*')
+  files=$(find . -mindepth 1 -maxdepth 1 ! -name "$(printf "*\n*")" ! -name index.html ! -path '*/.*' -printf "'%f',")
   env="$(mktemp)"
   cat <<EOF > "$env"
 title='$GITHUB_ACTOR alpine packages'
-files=['$files']
+files=[$files]
 add_top_level=$add_top_level
 EOF
   if "$add_top_level"; then
