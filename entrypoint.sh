@@ -45,10 +45,13 @@ generate_index() {
   files=$(echo * | sed s/[[:space:]]/\',\'/g)
   env="$(mktemp)"
   cat <<EOF > "$env"
-title='"$GITHUB_ACTOR" alpine packages'
-files=['"$files"']
+title='$GITHUB_ACTOR alpine packages'
+files=['$files']
 add_top_level=$add_top_level
 EOF
+  if "$add_top_level"; then
+    echo "dir='$dir'" >> "$env"
+  fi
   if [ -f index.html ]; then
     if grep "ABUILD_RELEASER_ACTION_INDEX_TEMPLATE" index.html 2> /dev/null; then
       tpl -env @"$env" /index.htlm.tpl > index.html

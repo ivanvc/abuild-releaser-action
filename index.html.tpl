@@ -11,10 +11,10 @@
     <hr />
     <ul>
       {{- if .add_top_level }}
-      <a href="..">..</a>
+      <li><a href="..">..</a></li>
       {{- end }}
       {{- range .files }}
-      <a href="{{ . }}">{{ . }}</a>
+      <li><a href="{{ . }}">{{ . }}</a></li>
       {{- end }}
     </ul>
     <hr />
