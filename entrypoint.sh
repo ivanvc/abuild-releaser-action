@@ -46,7 +46,7 @@ generate_index() {
   files=$3
   cd "$dir"
   if [ -z "$files" ]; then
-    files=$(find . -mindepth 1 -maxdepth 1 ! -name "$(printf "*\n*")" ! -name index.html ! -path '*/.*' -exec printf "'{}'," \;)
+    files=$(find . -mindepth 1 -maxdepth 1 ! -name "$(printf "*\n*")" ! -name index.html ! -path '*/.*')
   fi
   env="$(mktemp)"
   template="$REPO_ROOT/$INPUT_INDEX_PAGE_TEMPLATE"
@@ -54,10 +54,17 @@ generate_index() {
     template=/index.html.tpl
   fi
   cat <<EOF > "$env"
-title='$GITHUB_ACTOR alpine packages'
-files=[$files]
+title='$GITHUB_REPOSITORY Alpine packages'
 add_top_level=$add_top_level
 EOF
+  for file in $files; do
+    if [ -d "$file" ]; then
+      echo "files.'$file'.size=0" >> "$env"
+    else
+      echo "files.'$file'.size=$(git ls-tree --format='%(objectsize)' "$GH_PAGES_BRANCH" "$file")" >> "$env"
+    fi
+    echo "files.'$file'.created_at=$(git log --follow --format=%ad --date iso-strict "$file" | tail -1)" >> "$env"
+  done
   if "$add_top_level"; then
     echo "dir='$dir'" >> "$env"
   fi
@@ -68,7 +75,7 @@ EOF
   cd -
 }
 if [ "$INPUT_GENERATE_SINGLE_INDEX_PAGE" = "true" ]; then
-  files=$(find . ! -name "$(printf "*\n*")" ! -name index.html ! -path '*/.*' -type f -exec printf "'{}'," \;)
+  files=$(find . ! -name "$(printf "*\n*")" ! -name index.html ! -path '*/.*' -type f)
   generate_index . false "$files"
 elif [ "$INPUT_GENERATE_INDEX_PAGES" = "true" ]; then
   generate_index . false
