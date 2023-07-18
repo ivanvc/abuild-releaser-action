@@ -72,5 +72,6 @@ if [ "$INPUT_GENERATE_INDEX_PAGES" = "true" ]; then
 fi
 
 # Add files and push the branch
-git -c user.name="$GITHUB_ACTOR" -c user.email="$GITHUB_ACTOR@users.noreply.github.com" commit -am "${INPUT_COMMIT_MESSAGE:-Update packages}" && \
+git add .
+git -c user.name="$GITHUB_ACTOR" -c user.email="$GITHUB_ACTOR@users.noreply.github.com" commit -m "${INPUT_COMMIT_MESSAGE:-Update packages}" && \
   git push origin gh-pages || echo Nothing to commit
