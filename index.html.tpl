@@ -13,7 +13,7 @@
       {{- if .add_top_level }}
       <li><a href="..">..</a></li>
       {{- end }}
-      {{- range .files }}
+      {{- range (sortAlpha .files) }}
       <li><a href="{{ . | trimPrefix "./" }}">{{ . | trimPrefix "./" }}</a></li>
       {{- end }}
     </ul>

@@ -53,7 +53,7 @@ EOF
     echo "dir='$dir'" >> "$env"
   fi
   if [ -f index.html ]; then
-    if grep "ABUILD_RELEASER_ACTION_INDEX_TEMPLATE" index.html 2> /dev/null; then
+    if grep "ABUILD_RELEASER_ACTION_INDEX_TEMPLATE" index.html > /dev/null; then
       tpl -env @"$env" /index.html.tpl > index.html
     fi
   else
