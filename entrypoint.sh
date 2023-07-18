@@ -54,7 +54,7 @@ EOF
   fi
   if [ -f index.html ]; then
     if grep "ABUILD_RELEASER_ACTION_INDEX_TEMPLATE" index.html 2> /dev/null; then
-      tpl -env @"$env" /index.htlm.tpl > index.html
+      tpl -env @"$env" /index.html.tpl > index.html
     fi
   else
     tpl -env @"$env" /index.html.tpl > index.html
