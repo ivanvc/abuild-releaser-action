@@ -22,7 +22,8 @@
       <div class="3 col">
         <time datetime="{{ get $file "created_at" }}">
           <script>
-            document.write(Date.parse("{{ get $file "created_at" }}").toLocaleString());
+            let date = new Date(Date.parse("{{ get $file "created_at" }}"));
+            document.write(date.toLocaleString());
           </script>
         </time>
       </div>
