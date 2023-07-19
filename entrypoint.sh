@@ -63,7 +63,7 @@ EOF
     else
       echo "files.'$file'.size=$(git ls-tree --format='%(objectsize)' "$GH_PAGES_BRANCH" "$file")" >> "$env"
     fi
-    echo "files.'$file'.created_at=$(git log --follow --format=%ad --date iso-strict "$file" | tail -1)" >> "$env"
+    echo "files.'$file'.created_at='$(git log --follow --format=%ad --date iso-strict "$file" | tail -1)'" >> "$env"
   done
   if "$add_top_level"; then
     echo "dir='$dir'" >> "$env"

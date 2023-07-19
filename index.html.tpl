@@ -9,10 +9,6 @@
   <body class="c">
     <h1>Index {{ with .dir }}of {{ clean . }}{{ end }}</h1>
     <hr />
-    <div class="row">
-        <div class="7 col">Seven</div>
-        <div class="5 col">Five</div>
-    </div>
     {{- if .add_top_level }}
     <div class="row">
       <div class="12 col"><a href="..">..</a></div>
@@ -25,6 +21,9 @@
       <div class="7 col"><a href="{{ . }}">{{ clean . }}</a></div>
       <div class="3 col">
         <time datetime="{{ get $file "created_at" }}">
+          <script>
+            document.write(Date.parse("{{ get $file ".created_at" }}").toLocaleString());
+          </script>
           {{ get $file "created_at" }}
         </time>
       </div>
