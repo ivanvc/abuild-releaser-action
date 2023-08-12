@@ -56,7 +56,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ivanvc/abuild-releaser-action@v1.0.0
         with:
-          author: John Doe <ivan@vald.es>
+          author: John Doe <john@example.com>
           rsa_public_key: ${{ secrets.RSA_PUBLIC_KEY }}
           rsa_private_key: ${{ secrets.RSA_PRIVATE_KEY }}
 ```
