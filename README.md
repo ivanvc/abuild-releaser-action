@@ -3,6 +3,19 @@
 GitHub action to build and release to GitHub pages Alpine Linux aport packages
 contained in a repository.
 
+## Pre-requisites
+
+First, follow the [Alpine Linux guide on Creating an Alpine
+Package][alpine-guide]. Make sure to generate a RSA key by using `abuild-keygen
+-a -i`. Save the public and private keys, and set them as the repository
+secrets: `RSA_PUBLIC_KEY` and `RSA_PRIVATE_KEY`. This key will be used to sign
+the packages, and the build process will place the public key in the `gh-pages`
+branch.
+
+**NOTE:** This action will find all of the `APKBUILD` files in the repository
+and will build **all of these packages**. Therefore, you **should only have
+APKBUILD files from the packages you want to publish**.
+
 ## Usage
 
 ```yaml
@@ -64,3 +77,5 @@ jobs:
 ## License
 
 See [LICENSE](LICENSE) © [Ivan Valdes](https://github.com/ivanvc/)
+
+[alpine-guide]: https://wiki.alpinelinux.org/wiki/Creating_an_Alpine_package
