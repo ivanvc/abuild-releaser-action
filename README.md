@@ -1,5 +1,7 @@
 # abuild releaser action
 
+[![Lint](https://github.com/ivanvc/abuild-releaser-action/actions/workflows/lint.yml/badge.svg)](https://github.com/ivanvc/abuild-releaser-action/actions/workflows/lint.yml)
+
 GitHub action to build and release to GitHub pages Alpine Linux aport packages
 contained in a repository.
 
