@@ -13,8 +13,9 @@ the packages, and the build process will place the public key in the `gh-pages`
 branch.
 
 **NOTE:** This action will find all of the `APKBUILD` files in the repository
-and will build **all of these packages**. Therefore, you **should only have
-APKBUILD files from the packages you want to publish**.
+if `packages_dir` is not specified, and will build **all of these packages**.
+Therefore, you **should only have APKBUILD files from the packages you want to
+publish**, or provide the `packages_dir` option.
 
 ## Usage
 
@@ -47,9 +48,17 @@ with:
   # branch. If the file doesn't exist, or it's not provided, it will use the
   # default index.html.tpl.
   index_page_template: ''
+
+  # Release only the packages from the provided directories, release all of them
+  # if this is not provided.
+  packages_dir: ''
 ```
 
+Refer to [`action.yml`](action.yml) for the complete documentation.
+
 ### Example usage
+
+Release all packages in the repository:
 
 ```yaml
 name: Release
@@ -72,6 +81,25 @@ jobs:
           author: John Doe <john@example.com>
           rsa_public_key: ${{ secrets.RSA_PUBLIC_KEY }}
           rsa_private_key: ${{ secrets.RSA_PRIVATE_KEY }}
+```
+
+Release only the packages inside the `testing` directory, and
+`community/docker`:
+
+```yaml
+...
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ivanvc/abuild-releaser-action@v1.0.0
+        with:
+          author: John Doe <john@example.com>
+          rsa_public_key: ${{ secrets.RSA_PUBLIC_KEY }}
+          rsa_private_key: ${{ secrets.RSA_PRIVATE_KEY }}
+          package_dirs: "testing/*,community/docker"
 ```
 
 ## License

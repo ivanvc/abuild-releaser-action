@@ -30,7 +30,10 @@ git checkout "$ORIGINAL_BRANCH"
 
 # Build any directory that contains an APKBUILD file
 # shellcheck disable=SC2016
-find . -type f -name APKBUILD -exec /bin/sh -c 'cd $(dirname {}); abuild -F checksum; abuild -F -r; git clean -dfx' \;
+for dir in $(echo "$INPUT_PACKAGE_DIRS" | tr ',' '\n'); do
+  find "$dir" -type f -name APKBUILD -exec /bin/sh -c 'cd $(dirname {}); abuild -F checksum; abuild -F -r; git clean -dfx' \;
+done
+
 
 # Clean the repository and checkout the gh-pages branch
 # Copy released files

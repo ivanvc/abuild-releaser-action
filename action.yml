@@ -36,6 +36,13 @@ inputs:
       available template variables. Make sure to keep the
       "ABUILD_RELEASER_ACTION_INDEX_TEMPLATE" comment, to know it's an generated
       page.
+  package_dirs:
+    description: |
+      Comma-separated list of directories that contain the packages to publish,
+      it can be a glob pattern to allow multiple packages inside a directory. If
+      this option is not specified, it will find all of the APKBUILD files in
+      the repository.
+    default: '.'
 secrets:
   - GITHUB_TOKEN
 runs:
