@@ -11,6 +11,20 @@ echo "$INPUT_RSA_PRIVATE_KEY" > "$HOME/$GITHUB_REPOSITORY_OWNER.rsa"
 echo "$INPUT_RSA_PUBLIC_KEY" > "$HOME/$GITHUB_REPOSITORY_OWNER.rsa.pub"
 cp "$HOME/$GITHUB_REPOSITORY_OWNER.rsa.pub" /etc/apk/keys
 
+# Check Alpine release branch
+case "$INPUT_ALPINE_BRANCH" in
+  v[0-9].[0-9]* | latest-stable | edge)
+    if [ "$INPUT_ALPINE_BRANCH" != "edge" ]; then
+      sed "s/edge/$INPUT_ALPINE_BRANCH/" -i /etc/apk/repositories
+      apk upgrade -U --available
+    fi
+    ;;
+  *)
+    echo "Invalid input parameter: alpine_branch." \
+         "Expected 'v[0-9].[0-9]+' (e.g. v3.19), latest-stable or edge, but got: $INPUT_ALPINE_BRANCH."
+    exit 1
+esac
+
 # Set current directory as a safe directory.
 git config --global --add safe.directory /github/workspace
 ORIGINAL_BRANCH="$(git symbolic-ref --short HEAD)"
@@ -24,7 +38,7 @@ fi
 git checkout --progress --force -B "$GH_PAGES_BRANCH" refs/remotes/origin/"$GH_PAGES_BRANCH"
 
 # Copy current packages.
-mkdir ~/packages
+mkdir -p "$REPODEST"
 find . -type d -maxdepth 1 -mindepth 1 -not -path '*/.*' -exec cp -rf {} ~/packages/ \;
 git checkout "$ORIGINAL_BRANCH"
 
@@ -33,7 +47,6 @@ git checkout "$ORIGINAL_BRANCH"
 for dir in $(echo "$INPUT_PACKAGE_DIRS" | tr ',' '\n'); do
   find "$dir" -type f -name APKBUILD -exec /bin/sh -c 'cd $(dirname {}); abuild -F checksum; abuild -F -r; git clean -dfx' \;
 done
-
 
 # Clean the repository and checkout the gh-pages branch
 # Copy released files

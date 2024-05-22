@@ -43,6 +43,10 @@ inputs:
       this option is not specified, it will find all of the APKBUILD files in
       the repository.
     default: '.'
+  alpine_branch:
+    description: |
+      Alpine branch (release): vMAJOR.MINOR, latest-stable or edge.
+    default: 'edge'
 secrets:
   - GITHUB_TOKEN
 runs:

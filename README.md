@@ -54,6 +54,10 @@ with:
   # Release only the packages from the provided directories, release all of them
   # if this is not provided.
   packages_dir: ''
+
+  # Alpine branch (release): vMAJOR.MINOR, latest-stable or edge.
+  # Default: edge
+  alpine_branch: ''
 ```
 
 Refer to [`action.yml`](action.yml) for the complete documentation.
@@ -77,7 +81,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ivanvc/abuild-releaser-action@v1.1.0
         with:
           author: John Doe <john@example.com>
@@ -89,13 +93,11 @@ Release only the packages inside the `testing` directory, and
 `community/docker`:
 
 ```yaml
-...
-
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ivanvc/abuild-releaser-action@v1.0.0
         with:
           author: John Doe <john@example.com>
