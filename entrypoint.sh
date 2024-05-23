@@ -13,15 +13,15 @@ cp "$HOME/$GITHUB_REPOSITORY_OWNER.rsa.pub" /etc/apk/keys
 
 # Check Alpine release branch
 case "$INPUT_ALPINE_BRANCH" in
-  v[0-9].[0-9]* | latest-stable | edge)
-    if [ "$INPUT_ALPINE_BRANCH" != "edge" ]; then
-      sed "s/edge/$INPUT_ALPINE_BRANCH/" -i /etc/apk/repositories
-      apk upgrade -U --available
-    fi
+  edge)
+    ;;
+  v+([0-9]).+([0-9]) | latest-stable)
+    sed "s/edge/$INPUT_ALPINE_BRANCH/" -i /etc/apk/repositories
+    apk upgrade -U --available
     ;;
   *)
     echo "Invalid input parameter: alpine_branch." \
-         "Expected 'v[0-9].[0-9]+' (e.g. v3.19), latest-stable or edge, but got: $INPUT_ALPINE_BRANCH."
+         "Expected 'v[0-9]+.[0-9]+' (e.g. v3.19), latest-stable or edge, but got: $INPUT_ALPINE_BRANCH."
     exit 1
 esac
 
