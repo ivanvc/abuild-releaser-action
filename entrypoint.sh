@@ -13,9 +13,8 @@ cp "$HOME/$GITHUB_REPOSITORY_OWNER.rsa.pub" /etc/apk/keys
 
 # Check Alpine release branch
 case "$INPUT_ALPINE_BRANCH" in
-  edge)
-    ;;
-  v+([0-9]).+([0-9]) | latest-stable)
+  edge) true ;;
+  v[0-9][0-9]*.[0-9][0-9]* | latest-stable)
     sed "s/edge/$INPUT_ALPINE_BRANCH/" -i /etc/apk/repositories
     apk upgrade -U --available
     ;;
